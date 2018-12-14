@@ -1,0 +1,41 @@
+https://en.wikibooks.org/wiki/Card_Games/List
+
+FISH
+----
+    What cards belong to whom?
+    What cards are in the pool?
+    Whose turn is it?
+    Who is being asked for what card?
+
+
+State of game
+{
+    players: [{}, {}, ...],
+    ocean: [`K♠`, `3♠`, `4♠`],
+    whoseTurn: 0,
+}
+
+what each player looks like:
+
+{
+    name: "elijah",
+    cards: [`K♥`, `3♥`, `10♥`]
+}
+
+> What's your name? 
+
+
+> Elijah, who would you like to fish from?
+>>> Carl
+> Elijah, what card do you want? (K, 3, or 10)
+>>> 5
+> I'm sorry; you don't have a 5 in your hand.  What card do you want? (K, 3, or 10)
+>>> 3
+> Carl gave you two 3's.
+> Carl, who would you like to fish from?
+>>> Rob
+> Carl, what card do you want? (2 or 4)
+>>> 4
+> Go fish!
+> You got a 7♥.  Your cards are now 2♥, 2♠, 4♥, 4♠, 7♥
+...
