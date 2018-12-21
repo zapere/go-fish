@@ -1,0 +1,25 @@
+
+
+PLAYER 3 asked you for Q and you gave [QQ]
+PLAYER 2 asked PLAYER 3 for 7 and was told to go fish.
+Your turn.
+----------------------------------------
+GAME STATE:
+YOU: [AA 22 3 777 9 K]  [8888 JJJJ]
+
+PLAYER 2: [.....] [6666]
+PLAYER 3: [.....] []
+----------------------------------------
+What card would you like to ask for?   
+  > 7
+Which player would you like to ask?    
+  > PLAYER 3
+YOU asked PLAYER 3 for 7 and PLAYER 3 gave [7]
+YOU got a book of [7]
+----------------------------------------
+GAME STATE:
+YOU: [AA 22 3 9 K]  [7777 8888 JJJJ]
+
+PLAYER 2: [.....] [6666]
+PLAYER 3: [.....] []
+----------------------------------------
