@@ -53,13 +53,10 @@ assert.equal('10', getRank('10♠'))
 const addRJB = function (item) {
 	return "RJB"
 }
-const list = ['3♠', 'K♠', '3♥']
-console.log(list.map(getRank));
-
 
 // assert.deepEqual('[.....]', printPlayerHand(rob, elijah))
 // ['3♠', 'K♠', '3♥'] -> [3, K, 3]
-assert.deepEqual(`[3, K, 3]`, printPlayerHand(rob, rob))
+assert.deepEqual(`[33, K]`, printPlayerHand(rob, rob))
 
 
 // assert.deepEqual(expected, printGameState(gameState))

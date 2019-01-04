@@ -4,7 +4,8 @@ const getRank = function (card) {
 }
 const printPlayerHand = function (playerToDisplay, forPlayer) {
 	if (playerToDisplay === forPlayer) {
-		return playerToDisplay.hand.map(getRank)
+		const ranks = playerToDisplay.hand.map(getRank)
+		return `[${ranks.join(', ')}]`
 	}
 	return 'asdflkasdflkj'
 }
