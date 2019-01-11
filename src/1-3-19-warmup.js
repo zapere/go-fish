@@ -10,6 +10,8 @@ function hasAnO(word) {
 	return false
 }
 
+// https://github.com/MicrosoftDocs/live-share/issues/1485
+
 assert.strictEqual(true, hasAnO('okapi'))
 assert.strictEqual(false, hasAnO('fish'))
 assert.strictEqual(true, hasAnO('school'))
@@ -43,7 +45,7 @@ function amputate(word) {
 	for (let i = 1; i < word.length; i++) {
 		result += word[i]
 	}
-	return result;	
+	return result;
 }
 const s = 'abcde'
 const amputatedString = amputate(s)
@@ -55,5 +57,7 @@ assert.deepEqual(['chool', 'ooks', 'ish', 'indows', 'pple'], amputatedList)
 // [ 'school', 'books', 'fish', 'windows', 'apple' ]
 // [ school, books, fish, windows, apple ]
 // school____books____fish____windows____apple
-console.log(`[ ${words.join(' ')} ]`) 
+console.log(`[ ${words.join(' ')} ]`)
+
+
 

@@ -4,10 +4,29 @@ const getRank = function (card) {
 }
 const printPlayerHand = function (playerToDisplay, forPlayer) {
 	if (playerToDisplay === forPlayer) {
-		const ranks = playerToDisplay.hand.map(getRank)
+		let ranks = playerToDisplay.hand.map(getRank)
+		ranks = group(ranks)
 		return `[${ranks.join(', ')}]`
 	}
-	return 'asdflkasdflkj'
+	return '[.....]'
+}
+
+const group = function (list) {
+	list.sort()
+	list.push('Sentinel')
+	let previous = list[0]
+	let currentResultItem = ''
+	let result = []
+	for (let i = 0; i < list.length; i++) {
+		if (list[i] === previous) {
+			currentResultItem += list[i]
+		} else {
+			result.push(currentResultItem)
+			currentResultItem = list[i]
+			previous = list[i]
+		}
+	}
+	return result
 }
 
 const printPlayerName = function (playerToDisplay, forPlayer) {
@@ -18,8 +37,17 @@ const printPlayerName = function (playerToDisplay, forPlayer) {
 	return result
 }
 
-const printPlayerBooks = function () {
-
+const printPlayerBooks = function (player) {
+	let result = []
+	// Steps 
+	// get the player's books 
+	// 
+	const books = player.books
+	for (let i = 0; i < books.length; i++) {
+		result.push(books[i].repeat(4))
+	}
+	result.sort()
+	return `[${result.join(' ')}]`
 }
 
 const printGameState = function (gameState) {
@@ -30,6 +58,7 @@ const printGameState = function (gameState) {
 
 
 module.exports = {
+	group,
 	getRank,
 	printPlayerHand,
 	printPlayerName,

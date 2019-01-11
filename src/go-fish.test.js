@@ -1,5 +1,6 @@
 const assert = require('assert')
 const {
+	group,
 	printPlayerHand,
 	printPlayerName,
 	printPlayerBooks,
@@ -16,7 +17,7 @@ const elijah = {
 const rob = {
 	name: 'rob',
 	hand: ['3♠', 'K♠', '3♥'],
-	books: ['A']
+	books: ['A', '5']
 }
 // console.log(rob.name); // rob 
 
@@ -50,13 +51,15 @@ assert.deepEqual('YOU', printPlayerName(rob, rob))
 assert.equal('3', getRank('3♠'))
 assert.equal('10', getRank('10♠'))
 
-const addRJB = function (item) {
-	return "RJB"
-}
+assert.deepEqual(['33', '4' ,'K'], group(['3', 'K', '3', '4']))
+
 
 // assert.deepEqual('[.....]', printPlayerHand(rob, elijah))
 // ['3♠', 'K♠', '3♥'] -> [3, K, 3]
 assert.deepEqual(`[33, K]`, printPlayerHand(rob, rob))
+assert.deepEqual(`[.....]`, printPlayerHand(rob, elijah))
 
+assert.deepEqual(`[5555 AAAA]`, printPlayerBooks(rob))
+assert.deepEqual(`[]`, printPlayerBooks(carl))
 
 // assert.deepEqual(expected, printGameState(gameState))
