@@ -50,8 +50,21 @@ const printPlayerBooks = function (player) {
 	return `[${result.join(' ')}]`
 }
 
+const printPlayerGameState = function (playerToDisplay, forPlayer) {
+
+}
+
 const printGameState = function (gameState) {
-	let result = players
+	let result = ''
+
+	// Steps: 
+	// get the player whose turn it is. 
+	const whoseTurn = gameState.players[gameState.whoseTurn]
+	// print name hand books 
+	// result = `${printPlayerHand(whoseTurn,)}`
+	// get other players 
+	// print name hand books 
+
 	return result
 }
 
@@ -63,5 +76,6 @@ module.exports = {
 	printPlayerHand,
 	printPlayerName,
 	printPlayerBooks,
+	printPlayerGameState,
 	printGameState,
 }

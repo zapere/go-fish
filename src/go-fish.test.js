@@ -4,13 +4,14 @@ const {
 	printPlayerHand,
 	printPlayerName,
 	printPlayerBooks,
+	printPlayerGameState,
 	printGameState,
 	getRank
 } = require('./go-fish')
 
 const elijah = {
 	name: 'elijah',
-	hand: ['2♠', '9♠'],
+	hand: ['2♠', '9♠', '2♥'],
 	books: ['4']
 
 }
@@ -37,13 +38,8 @@ const gameState = {
 // GAME STATE:
 // YOU: [AA 22 3 777 9 K]  [8888 JJJJ]
 
-// PLAYER 2: [.....] [6666]
-// PLAYER 3: [.....] []
-
-const expected = `
-YOU: [2 9] [4444]
-carl: [.....] []
-rob: [.....] [AAAA]`.trim()
+// carl: [.....] [6666]
+// rob: [.....] []
 
 assert.deepEqual('rob', printPlayerName(rob, elijah))
 assert.deepEqual('YOU', printPlayerName(rob, rob))
@@ -51,7 +47,7 @@ assert.deepEqual('YOU', printPlayerName(rob, rob))
 assert.equal('3', getRank('3♠'))
 assert.equal('10', getRank('10♠'))
 
-assert.deepEqual(['33', '4' ,'K'], group(['3', 'K', '3', '4']))
+assert.deepEqual(['33', '4', 'K'], group(['3', 'K', '3', '4']))
 
 
 // assert.deepEqual('[.....]', printPlayerHand(rob, elijah))
@@ -61,5 +57,18 @@ assert.deepEqual(`[.....]`, printPlayerHand(rob, elijah))
 
 assert.deepEqual(`[5555 AAAA]`, printPlayerBooks(rob))
 assert.deepEqual(`[]`, printPlayerBooks(carl))
+
+assert.deepEqual(`YOU: [22, 9] [4444]`, printPlayerGameState(elijah, elijah))
+
+
+
+
+// const gameStateTextExpected = `
+// YOU: [22, 9] [4444]
+
+// carl: [.....] []
+// rob: [.....] [AAAA]`.trim()
+
+// assert.equal(gameStateTextExpected, printGameState(gameState))
 
 // assert.deepEqual(expected, printGameState(gameState))
