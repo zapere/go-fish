@@ -1,0 +1,12 @@
+function | parameter types | return type
+--------------------------------------------------------
+foreach  |  list function  |  nothing
+map      |  list function  | list of same length  
+filter   |  list function  | list of different length and same contents 
+reduce   |  list function initial value               | single value 
+
+myList.forEach(????) ------> ????
+myList.map(????)     ------> ????
+myList.filter(????)  ------> ????
+myList.reduce(????)  ------> ????
+

@@ -59,9 +59,9 @@ assert.deepEqual(`[5555 AAAA]`, printPlayerBooks(rob))
 assert.deepEqual(`[]`, printPlayerBooks(carl))
 
 assert.deepEqual(`YOU: [22, 9] [4444]`, printPlayerGameState(elijah, elijah))
-
-
-
+assert.deepEqual(`rob: [.....] [5555 AAAA]`, printPlayerGameState(rob, elijah))
+assert.deepEqual(`YOU: [33, K] [5555 AAAA]\n\nelijah: [.....] [4444]\ncarl: [.....] []\n`, printGameState(gameState, rob))
+console.log(printGameState(gameState, carl))
 
 // const gameStateTextExpected = `
 // YOU: [22, 9] [4444]

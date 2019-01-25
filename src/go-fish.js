@@ -1,3 +1,4 @@
+const { askRank, askPlayer} = require('./prompt-user')
 const getRank = function (card) {
 	const rank = card.slice(0, card.length - 1)
 	return rank
@@ -51,16 +52,30 @@ const printPlayerBooks = function (player) {
 }
 
 const printPlayerGameState = function (playerToDisplay, forPlayer) {
-
+	const hand = printPlayerHand(playerToDisplay, forPlayer)
+	const books = printPlayerBooks(playerToDisplay)
+	const player = printPlayerName(playerToDisplay, forPlayer)
+	return `${player}: ${hand} ${books}`
 }
 
-const printGameState = function (gameState) {
+
+
+const printGameState = function (gameState, forPlayer) {
 	let result = ''
 
 	// Steps: 
 	// get the player whose turn it is. 
-	const whoseTurn = gameState.players[gameState.whoseTurn]
+	//const whoseTurn = gameState.players[gameState.whoseTurn]
 	// print name hand books 
+	result += printPlayerGameState(forPlayer, forPlayer) + '\n\n'
+	const otherPlayers = gameState.players.filter(function (player) {
+		return player !== forPlayer
+	})
+	otherPlayers.forEach(
+		function (player) {
+			result += printPlayerGameState(player) + '\n'
+		}
+	)
 	// result = `${printPlayerHand(whoseTurn,)}`
 	// get other players 
 	// print name hand books 
@@ -79,3 +94,14 @@ module.exports = {
 	printPlayerGameState,
 	printGameState,
 }
+
+async function run() {
+	const rank = await askRank(['2','4','9','A'])
+	const otherPlayer = await askPlayer(['rob', 'carl'])
+
+	console.log('rank', rank)
+	console.log('player', otherPlayer)
+}
+
+
+run()
