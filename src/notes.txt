@@ -10,7 +10,7 @@ YOU: [AA 22 3 777 9 K]  [8888 JJJJ]
 PLAYER 2: [.....] [6666]
 PLAYER 3: [.....] []
 ----------------------------------------
-What card would you like to ask for?   
+What card would you like to ask for?      
   > 7
 Which player would you like to ask?    
   > PLAYER 3

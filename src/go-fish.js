@@ -1,4 +1,3 @@
-const { askRank, askPlayer} = require('./prompt-user')
 const getRank = function (card) {
 	const rank = card.slice(0, card.length - 1)
 	return rank
@@ -83,6 +82,43 @@ const printGameState = function (gameState, forPlayer) {
 	return result
 }
 
+const hasFourCharacters = function (group) {
+	if (group.length === 4) {
+		return true
+	}
+	return false
+}
+const getFirstChar = function (string) {
+	return string[0]
+}
+// find the books in the hand 
+const findBooks = function (hand) {
+	const ranks = hand.map(getRank)
+	const groups = group(ranks)
+	const books = groups
+		.filter(hasFourCharacters)
+		.map(getFirstChar)
+	return books
+}
+
+const moveBookFromHandToBooks = function (player, book) {
+
+	// Take the book's cards out of player's hand. 
+	player.hand = player.hand.filter(function (card) {
+		const rank = getRank(card);
+		if (rank === book) {
+			return false
+		}
+		return true
+	})
+	// Add the new book to the player's books. 
+	player.books.push(book)	
+}
+// when found, move books from hand to books
+
+// determine if the player has the requested card 
+
+// change a player's hand (add or remove cards)
 
 
 module.exports = {
@@ -93,15 +129,9 @@ module.exports = {
 	printPlayerBooks,
 	printPlayerGameState,
 	printGameState,
+	findBooks,
+	hasFourCharacters,
+	getFirstChar,
+	moveBookFromHandToBooks
 }
 
-async function run() {
-	const rank = await askRank(['2','4','9','A'])
-	const otherPlayer = await askPlayer(['rob', 'carl'])
-
-	console.log('rank', rank)
-	console.log('player', otherPlayer)
-}
-
-
-run()

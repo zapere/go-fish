@@ -6,7 +6,11 @@ const {
 	printPlayerBooks,
 	printPlayerGameState,
 	printGameState,
-	getRank
+	getRank,
+	findBooks,
+	hasFourCharacters,
+	getFirstChar,
+	moveBookFromHandToBooks
 } = require('./go-fish')
 
 const elijah = {
@@ -61,7 +65,30 @@ assert.deepEqual(`[]`, printPlayerBooks(carl))
 assert.deepEqual(`YOU: [22, 9] [4444]`, printPlayerGameState(elijah, elijah))
 assert.deepEqual(`rob: [.....] [5555 AAAA]`, printPlayerGameState(rob, elijah))
 assert.deepEqual(`YOU: [33, K] [5555 AAAA]\n\nelijah: [.....] [4444]\ncarl: [.....] []\n`, printGameState(gameState, rob))
-console.log(printGameState(gameState, carl))
+
+assert.deepEqual(false, hasFourCharacters(`aaa`))
+assert.deepEqual(true, hasFourCharacters(`aaaa`))
+
+assert.deepEqual('a', getFirstChar(`aaa`))
+
+assert.deepEqual([`4`], findBooks(['4♠', '4♦', '4♥', `4♣`, `K♣`, `9♦`]))
+assert.deepEqual([`5`], findBooks(['5♠', '5♦', '5♥', `5♣`, `K♣`, `9♦`]))
+
+const george = {
+	name: 'george',
+	hand: ['3♠', '5♠', '5♦', '5♥', `5♣`, 'K♠', '3♥'],
+	books: ['A']
+}
+const expectedGeorge = {
+	name: 'george',
+	hand: ['3♠', 'K♠', '3♥'],
+	books: ['A', '5']
+}
+
+moveBookFromHandToBooks(george, '5')
+assert.deepEqual(george, expectedGeorge)
+
+// console.log(printGameState(gameState, carl))
 
 // const gameStateTextExpected = `
 // YOU: [22, 9] [4444]
@@ -72,3 +99,4 @@ console.log(printGameState(gameState, carl))
 // assert.equal(gameStateTextExpected, printGameState(gameState))
 
 // assert.deepEqual(expected, printGameState(gameState))
+// ♣ ♦	
