@@ -34,7 +34,27 @@ const askPlayer = async (players) => {
     }
     return player
 }
+const askNewPlayer = async () => {
+    let player = undefined
+    while (player === undefined) {
+        const answer = await inquirer.prompt({
+            type: 'input',
+            name: 'whichPlayer',
+            message: `Who is the next player?`,
+            default: 'DONE'
+        });
+        
+        console.log(answer.whichPlayer)
+        if (answer.whichPlayer !== 'DONE') {
+            player = answer.whichPlayer
+        } else {
+            player = undefined
+            break;
+        }
+    }
+    return player
+}
 
 module.exports = {
-    askRank, askPlayer
+    askRank, askPlayer, askNewPlayer
 }

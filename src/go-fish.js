@@ -57,8 +57,6 @@ const printPlayerGameState = function (playerToDisplay, forPlayer) {
 	return `${player}: ${hand} ${books}`
 }
 
-
-
 const printGameState = function (gameState, forPlayer) {
 	let result = ''
 
@@ -112,8 +110,26 @@ const moveBookFromHandToBooks = function (player, book) {
 		return true
 	})
 	// Add the new book to the player's books. 
-	player.books.push(book)	
+	player.books.push(book)
 }
+
+const getRanks = function (hand) {
+	let ranks = []
+	// const handRanks = hand.map(getRank)
+	// handRanks.forEach(rank => {
+	// 	if (!ranks.includes(rank)) {
+	// 		ranks.push(rank)
+	// 	}
+	// })
+	for(let i = 0; i<hand.length; i++){
+		const rank = getRank(hand[i])
+		if(!ranks.includes(rank)){
+			ranks.push(rank)
+		}
+	}
+	return ranks
+}
+
 // when found, move books from hand to books
 
 // determine if the player has the requested card 
@@ -132,6 +148,7 @@ module.exports = {
 	findBooks,
 	hasFourCharacters,
 	getFirstChar,
-	moveBookFromHandToBooks
+	moveBookFromHandToBooks,
+	getRanks
 }
 
