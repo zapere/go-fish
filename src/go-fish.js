@@ -121,13 +121,39 @@ const getRanks = function (hand) {
 	// 		ranks.push(rank)
 	// 	}
 	// })
-	for(let i = 0; i<hand.length; i++){
+	for (let i = 0; i < hand.length; i++) {
 		const rank = getRank(hand[i])
-		if(!ranks.includes(rank)){
+		if (!ranks.includes(rank)) {
 			ranks.push(rank)
 		}
 	}
 	return ranks
+}
+
+const matchesRank = function (rank, card) {
+	const cardRank = getRank(card)
+	if (rank === cardRank) {
+		return true
+	}
+	else {
+		return false
+	}
+}
+
+const relinquishCardsOfRank = function (player, requestedRank) {
+	const matchesThisRank = function (card) {
+		return matchesRank(requestedRank, card)
+	}
+
+	const matchingCards = player.hand.filter(matchesThisRank)
+
+	const doesntMatchThisRank = function (card) {
+		return !matchesRank(requestedRank, card)
+	}
+
+	player.hand = player.hand.filter(doesntMatchThisRank)
+
+	return matchingCards
 }
 
 // when found, move books from hand to books
@@ -149,6 +175,8 @@ module.exports = {
 	hasFourCharacters,
 	getFirstChar,
 	moveBookFromHandToBooks,
-	getRanks
+	getRanks,
+	matchesRank,
+	relinquishCardsOfRank
 }
 

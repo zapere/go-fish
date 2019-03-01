@@ -8,10 +8,12 @@ const {
 	printGameState,
 	getRank,
 	findBooks,
+	matchesRank,
 	hasFourCharacters,
 	getFirstChar,
 	moveBookFromHandToBooks,
-	getRanks
+	getRanks,
+	relinquishCardsOfRank,
 } = require('./go-fish')
 
 const elijah = {
@@ -92,13 +94,25 @@ assert.deepEqual(george, expectedGeorge)
 
 const fred = {
 	name: 'fred',
-	hand: ['3♠', '5♠', '5♦', '5♥', `5♣`, 'K♠', '3♥'],
+	hand: ['3♠', '5♠', '5♦', '5♥', 'K♠', '3♥'],
 	books: ['A']
 }
 
 const ranks = getRanks(fred.hand)
 assert.deepEqual(ranks, ['3', '5', 'K'])
 
+assert.deepEqual(matchesRank('3', '3♠'), true)
+assert.deepEqual(matchesRank('5', '7♠'), false)
+
+
+const sevens = relinquishCardsOfRank(fred, '7')
+assert.deepEqual(sevens, [])
+assert.deepEqual(fred.hand, ['3♠', '5♠', '5♦', '5♥', 'K♠', '3♥'])
+
+
+const threes = relinquishCardsOfRank(fred, '3')
+assert.deepEqual(threes, ['3♠', '3♥'])
+assert.deepEqual(fred.hand, ['5♠', '5♦', '5♥', 'K♠'])
 
 // console.log(printGameState(gameState, carl))
 

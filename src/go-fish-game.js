@@ -68,19 +68,19 @@ async function run() {
 	console.log('rank', rank)
 
 	// does otherPlayer have the rank?
-	console.log(otherPlayerName)
-	console.log(gameState.players)
 	const otherPlayer = gameState.players
-	.filter(function(player){
-		if(player.name === otherPlayerName){
-			return true
-		}else{
-			return false
-		}
-	})
+		.find(function (player) {
+			if (player.name === otherPlayerName) {
+				return true
+			} else {
+				return false
+			}
+		})
 	console.log("other player hand", otherPlayer.hand)
 	// const otherPlayerHandContainsRank = ???
 	// console.log('other player has requested rank?', otherPlayerHandContainsRank)
+
+
 }
 
 run()
