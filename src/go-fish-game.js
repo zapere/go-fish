@@ -4,6 +4,7 @@ const shuffle = require('./shuffle')
 const {
 	printGameState,
 	moveBookFromHandToBooks,
+	findAndMovePlayerBooks,
 	findBooks,
 	getRanks,
 	relinquishCardsOfRank,
@@ -51,10 +52,7 @@ async function run() {
 
 	gameState.players.forEach(function (player) {
 		player.hand = dealFromTop(deck, cardsPerPlayer)
-		const books = findBooks(player.hand)
-		books.forEach(function (book) {
-			moveBookFromHandToBooks(player, book)
-		})
+		findAndMovePlayerBooks(player)
 	})
 
 	while (true) {
@@ -118,12 +116,12 @@ async function run() {
 				gotTheRequestedRank = true
 			}
 		}
-
+		findAndMovePlayerBooks(currentPlayer)
 		console.log("gotTheRequestedRank?", gotTheRequestedRank)
 		// let currentPlayer = gameState.players[gameState.whoseTurn]
 		// if the player got the rank, then don't change whose turn.
 		// but if the player didn't, then advance to the next player
-		if(gotTheRequestedRank === false){
+		if (gotTheRequestedRank === false) {
 			gameState.whoseTurn = (gameState.whoseTurn + 1) % gameState.players.length
 		}
 	} /// END OF LOOP
@@ -132,6 +130,10 @@ async function run() {
 	// console.log('other player has requested rank?', otherPlayerHandContainsRank)
 
 
+	// Backlog 
+	// BUG: YOU: [1010, 222, 44, 7, A, JJJ] [1111] (book is really 10s, and hand shouldn't have 1010)
+	// It's hard to tell whose turn it is 
+	// Tell the player the card they got while fishing
 }
 
 run()

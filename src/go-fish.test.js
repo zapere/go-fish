@@ -9,9 +9,10 @@ const {
 	getRank,
 	findBooks,
 	matchesRank,
-	hasFourCharacters,
-	getFirstChar,
+	hasFourCards,
+	getRankFromGroup,
 	moveBookFromHandToBooks,
+	findAndMovePlayerBooks,
 	getRanks,
 	relinquishCardsOfRank,
 } = require('./go-fish')
@@ -69,13 +70,19 @@ assert.deepEqual(`YOU: [22, 9] [4444]`, printPlayerGameState(elijah, elijah))
 assert.deepEqual(`rob: [.....] [5555 AAAA]`, printPlayerGameState(rob, elijah))
 assert.deepEqual(`YOU: [33, K] [5555 AAAA]\n\nelijah: [.....] [4444]\ncarl: [.....] []\n`, printGameState(gameState, rob))
 
-assert.deepEqual(false, hasFourCharacters(`aaa`))
-assert.deepEqual(true, hasFourCharacters(`aaaa`))
+assert.deepEqual(false, hasFourCards(`aaa`))
+assert.deepEqual(true, hasFourCards(`aaaa`))
+assert.deepEqual(true, hasFourCards(`10101010`))
+assert.deepEqual(false, hasFourCards(`1010`))
 
-assert.deepEqual('a', getFirstChar(`aaa`))
+
+assert.deepEqual('a', getRankFromGroup(`aaa`))
+assert.deepEqual('10', getRankFromGroup(`1010`))
 
 assert.deepEqual([`4`], findBooks(['4♠', '4♦', '4♥', `4♣`, `K♣`, `9♦`]))
 assert.deepEqual([`5`], findBooks(['5♠', '5♦', '5♥', `5♣`, `K♣`, `9♦`]))
+assert.deepEqual([], findBooks(['10♠', '10♥']))
+assert.deepEqual(['10'], findBooks(['10♠', '10♥', '10♣', '10♦']))
 assert.deepEqual([], findBooks(['5♠', '5♦', '5♥', `6♣`, `K♣`, `9♦`]))
 
 const george = {
@@ -91,6 +98,39 @@ const expectedGeorge = {
 
 moveBookFromHandToBooks(george, '5')
 assert.deepEqual(george, expectedGeorge)
+
+const alice = {
+	name: 'alice',
+	hand: ['3♠', '5♠', '5♦', '5♥', `5♣`, 'K♠', '3♥'],
+	books: ['A']
+}
+const expectedAlice = {
+	name: 'alice',
+	hand: ['3♠', 'K♠', '3♥'],
+	books: ['A', '5']
+}
+
+findAndMovePlayerBooks(alice)
+assert.deepEqual(alice, expectedAlice)
+
+const twoTens = {
+	name: 'twoTens',
+	hand: ['10♠', '10♥'],
+	books: []
+}
+findAndMovePlayerBooks(twoTens)
+assert.deepEqual(twoTens.books, [])
+assert.deepEqual(twoTens.hand, ['10♠', '10♥'])
+
+const fourTens = {
+	name: 'fourTens',
+	hand: ['10♠', '10♥', '10♣', '10♦'],
+	books: []
+}
+findAndMovePlayerBooks(fourTens)
+assert.deepEqual(fourTens.books, [10])
+assert.deepEqual(fourTens.hand, [])
+
 
 const fred = {
 	name: 'fred',

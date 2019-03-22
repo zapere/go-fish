@@ -80,22 +80,32 @@ const printGameState = function (gameState, forPlayer) {
 	return result
 }
 
-const hasFourCharacters = function (group) {
+const hasFourCards = function (group) {
+	if (group.includes('0')) {
+		if (group.length === 8) {
+			return true
+		}
+		return false
+	}
+
 	if (group.length === 4) {
 		return true
 	}
 	return false
 }
-const getFirstChar = function (string) {
-	return string[0]
+const getRankFromGroup = function (group) {
+	if (group.includes('0')) {
+		return '10'
+	}
+	return group[0]
 }
 // find the books in the hand 
 const findBooks = function (hand) {
 	const ranks = hand.map(getRank)
 	const groups = group(ranks)
 	const books = groups
-		.filter(hasFourCharacters)
-		.map(getFirstChar)
+		.filter(hasFourCards)
+		.map(getRankFromGroup)
 	return books
 }
 
@@ -111,6 +121,13 @@ const moveBookFromHandToBooks = function (player, book) {
 	})
 	// Add the new book to the player's books. 
 	player.books.push(book)
+}
+
+const findAndMovePlayerBooks = function (player) {
+	const books = findBooks(player.hand)
+	books.forEach(function (book) {
+		moveBookFromHandToBooks(player, book)
+	})
 }
 
 const getRanks = function (hand) {
@@ -172,9 +189,10 @@ module.exports = {
 	printPlayerGameState,
 	printGameState,
 	findBooks,
-	hasFourCharacters,
-	getFirstChar,
+	hasFourCards,
+	getRankFromGroup,
 	moveBookFromHandToBooks,
+	findAndMovePlayerBooks,
 	getRanks,
 	matchesRank,
 	relinquishCardsOfRank
