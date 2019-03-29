@@ -69,7 +69,7 @@ async function run() {
 			.map(function (player) {
 				return player.name
 			})
-		const otherPlayerName = await askPlayer(otherPlayers)
+		const otherPlayerName = await askPlayer(otherPlayers, currentPlayer.name)
 
 		// For what card?
 		const rank = await askRank(getRanks(currentPlayer.hand))
@@ -111,13 +111,13 @@ async function run() {
 			//         c=>< c=>< c=>< c=>< 
 			const fishedCard = dealFromTop(ocean, 1)[0]
 			currentPlayer.hand.push(fishedCard)
+			console.log(`You got a ${fishedCard}`)
 
 			if (getRank(fishedCard) === rank) {
 				gotTheRequestedRank = true
 			}
 		}
 		findAndMovePlayerBooks(currentPlayer)
-		console.log("gotTheRequestedRank?", gotTheRequestedRank)
 		// let currentPlayer = gameState.players[gameState.whoseTurn]
 		// if the player got the rank, then don't change whose turn.
 		// but if the player didn't, then advance to the next player
@@ -131,9 +131,10 @@ async function run() {
 
 
 	// Backlog 
-	// BUG: YOU: [1010, 222, 44, 7, A, JJJ] [1111] (book is really 10s, and hand shouldn't have 1010)
-	// It's hard to tell whose turn it is 
-	// Tell the player the card they got while fishing
+	// √ BUG: YOU: [1010, 222, 44, 7, A, JJJ] [1111] (book is really 10s, and hand shouldn't have 1010)
+	// √ It's hard to tell whose turn it is 
+	// √ Tell the player the card they got while fishing
+
 }
 
 run()

@@ -17,13 +17,13 @@ const askRank = async (ranks) => {
     return rank
 }
 
-const askPlayer = async (players) => {
+const askPlayer = async (players, currentPlayer) => {
     let player = undefined
     while (player === undefined) {
         const answer = await inquirer.prompt({
             type: 'input',
             name: 'whichPlayer',
-            message: `Which player? (${players})`,
+            message: `${currentPlayer}, which player do you want to ask? (${players})`,
             default: players[0]
         });
         
