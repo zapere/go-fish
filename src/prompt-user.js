@@ -55,6 +55,27 @@ const askNewPlayer = async () => {
     return player
 }
 
+const askForPlayerName = async () => {
+    const answer = await inquirer.prompt({
+        type: 'input',
+        name: 'name',
+        message: `What's your name?`,
+    });
+
+    console.log(answer.name)
+    return answer.name
+}
+
+const askToStartGame = async () => {
+    const answer = await inquirer.prompt({
+        type: 'confirm',
+        name: 'start',
+        message: `Start playing?`
+    });
+
+    return answer.start
+}
+
 module.exports = {
-    askRank, askPlayer, askNewPlayer
+    askRank, askPlayer, askNewPlayer, askForPlayerName, askToStartGame
 }
