@@ -28,8 +28,6 @@ const rob = {
 	hand: ['3♠', 'K♠', '3♥'],
 	books: ['A', '5']
 }
-// console.log(rob.name); // rob 
-
 
 const carl = {
 	name: 'carl',
