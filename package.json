@@ -6,12 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open",
+    "start-server" : "node src/go-fish-server.js",
     "build": "webpack"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "inquirer": "^6.2.1"
+    "inquirer": "^6.2.1",
+    "express": "4.16.4",
+    "socket.io": "2.2.0"
   },
   "devDependencies": {
     "webpack": "^4.25.1",

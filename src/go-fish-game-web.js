@@ -1,3 +1,22 @@
+const assert = require('assert')
+function swap(list, index1, index2) {
+	const temp = list[index1]
+	list[index1] = list[index2]
+	list[index2] = temp
+}
+
+const list = ["dog", "cat", "rhinoceros", "bird"]
+swap(list, 0, 3)
+const swapped = list
+assert.deepEqual(["bird", "cat", "rhinoceros", "dog"], swapped)
+
+function isYou(player) {
+	if (player.name === playerName) {
+		return true
+	}
+	return false
+}
+
 // Game play
 // Ask the player their name. 
 // Start game button. Which anyone can click to start the game. 
@@ -37,6 +56,8 @@ const carl = {
 	books: []
 }
 
+const playerName = "rob"
+
 const gameState = {
 	players: [elijah, carl, rob],
 	ocean: [`K♠`, `7♠`, `8♠`],
@@ -47,20 +68,79 @@ function clearBoard() {
 	document.body.innerHTML = "";
 }
 
-function getPlayerHtml(player) {
-	const name = player.name
-	const html = `
-    <div id="${name}" class="player-container">
-		<span class="playerName">${name}</span>
-    </div>`
+function getCardFileName(card) {
+	const rank = card.slice(0, card.length - 1)
+	const suit = card.slice(-1)
+	const suitToLetter = {
+		'♠': 'S',
+		'♥': 'H',
+		'♣': 'C',
+		'♦': 'D'
+	}
+	return rank + suitToLetter[suit] + '.png'
+}
+
+function getCardImgTag(card) {
+	return `<img src="img/cards/${getCardFileName(card)}" height="180" width="120">`
+}
+
+function getPlayerHandHtml(player) {
+	let html = ''
+	if (isYou(player)) {
+		// const zzz =        players.map(getPlayerHtml).join('\n')
+		const cardsHtml = player.hand.map(getCardImgTag).join('\n')
+		html = `
+		<h4>Hand</h4>
+		<div class="playerHandContainer">
+			${cardsHtml}
+		</div>`
+	}
 	return html
 }
 
+function getPlayerHtml(player) {
+	let name = player.name
+	if (isYou(player)) {
+		name = "You"
+	}
+	const html = `
+    <div id="${name}" class="player-container">
+		<span class="playerName">${name}</span>
+		${getPlayerHandHtml(player)}
+		</div>`
+	// <div id="player1" class="player-container">
+	// 	<span class="playerName">You</span>
+	// 	<h4>Hand</h4>
+	// 	<div class="playerHandContainer">
+	// 		<img src="img/cards/10C.png" height="180" width="120">
+	// 		<img src="img/cards/10C.png" height="180" width="120">
+	// 		<img src="img/cards/10C.png" height="180" width="120">
+	// 		<img src="img/cards/10C.png" height="180" width="120">
+	// 		<img src="img/cards/10C.png" height="180" width="120">
+	// 		<img src="img/cards/10C.png" height="180" width="120">
+	// 		<img src="img/cards/10C.png" height="180" width="120">
+	// 		<img src="img/cards/10C.png" height="180" width="120">
+	// 		<img src="img/cards/10C.png" height="180" width="120">
+	// 		<img src="img/cards/10C.png" height="180" width="120">
+	// 	</div>
+	// 	<h4>Books</h4>
+	// 	<div class="playerBookContainer">
+	// 		<img src="img/cards/10C.png" height="180" width="120">
+	// 		<img src="img/cards/2C.png" height="180" width="120">
+	// 	</div>
+	// </div>
+	return html
+}
+
+
+
 function showPlayers(players) {
+	const indexOfYou = players.findIndex(isYou)
+	swap(players, indexOfYou, 0)
 	const html = players.map(getPlayerHtml).join('\n')
 	document.body.innerHTML = html
 	// Show the names of all the players
-	// names 
+	// √ names 
 	// Hand if player is this user
 	// Books 
 }
@@ -74,3 +154,5 @@ window.onload = function () {
 	clearBoard()
 	showPlayers(gameState.players)
 }
+
+
