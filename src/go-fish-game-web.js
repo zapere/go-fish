@@ -84,10 +84,14 @@ function getCardImgTag(card) {
 	return `<img src="img/cards/${getCardFileName(card)}" height="180" width="120">`
 }
 
+function getBookCard(book) {
+	const card = `${book}♣`
+	return card
+}
+
 function getPlayerHandHtml(player) {
 	let html = ''
 	if (isYou(player)) {
-		// const zzz =        players.map(getPlayerHtml).join('\n')
 		const cardsHtml = player.hand.map(getCardImgTag).join('\n')
 		html = `
 		<h4>Hand</h4>
@@ -98,16 +102,34 @@ function getPlayerHandHtml(player) {
 	return html
 }
 
+function getPlayerBooksHtml(player) {
+	const booksHtml = player.books.map(getBookCard).map(getCardImgTag).join('\n')
+	const html = `
+		<h4>Books</h4>
+		<div class="playerBookContainer">
+			${booksHtml}
+		</div>`
+	return html
+}
+
+function getPlayerCardCountHtml(player) {
+	if (!isYou(player)) return `<span class="badge badge-primary">${player.hand.length}</span>`
+	return ''
+}
+
 function getPlayerHtml(player) {
 	let name = player.name
 	if (isYou(player)) {
 		name = "You"
 	}
 	const html = `
-    <div id="${name}" class="player-container">
-		<span class="playerName">${name}</span>
-		${getPlayerHandHtml(player)}
-		</div>`
+		<div id= "${name}" class="player-container">
+			<span class="playerName">${name}</span>
+			${getPlayerCardCountHtml(player)}
+			${getPlayerHandHtml(player)}
+			${getPlayerBooksHtml(player)}
+		</div>
+		<hr/>`
 	// <div id="player1" class="player-container">
 	// 	<span class="playerName">You</span>
 	// 	<h4>Hand</h4>
@@ -141,18 +163,21 @@ function showPlayers(players) {
 	document.body.innerHTML = html
 	// Show the names of all the players
 	// √ names 
-	// Hand if player is this user
-	// Books 
+	// √ Hand if player is this user
+	// √ Books 
+	// √ Show the number of cards with each player
+	//   Show buttons on each player
+	//     - if it is "You"r turn
+	//     - buttons for each rank in "You"r hand
+	//     - for each player who is not You
 }
 
-// - Show the hand of the user
-// 	- Show the hand of elijah
 
 
 // really start doing things here
 window.onload = function () {
-	clearBoard()
 	showPlayers(gameState.players)
+	// $.toast('Here you can put the text of the toast')
 }
 
 
