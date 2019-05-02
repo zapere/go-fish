@@ -1,4 +1,6 @@
 const assert = require('assert')
+const io = require('socket.io-client')
+
 function swap(list, index1, index2) {
 	const temp = list[index1]
 	list[index1] = list[index2]
@@ -177,6 +179,21 @@ function showPlayers(players) {
 // really start doing things here
 window.onload = function () {
 	showPlayers(gameState.players)
+	const socket = io('http://localhost:3000')
+	console.log('init')
+	socket.on('connect', onConnect)
+	socket.on('new-player-added', onNewPlayerAdded)
+
+	function onNewPlayerAdded(players) {
+		console.log(`new player`)
+		console.log(`all players`, players)
+	}
+
+	function onConnect() {
+		console.log('connect ' + socket.id);
+		socket.emit('add-new-player', "Rob");
+	}
+
 	// $.toast('Here you can put the text of the toast')
 }
 
