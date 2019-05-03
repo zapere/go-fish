@@ -1,5 +1,6 @@
 const assert = require('assert')
 const io = require('socket.io-client')
+const { getRanks } = require('./go-fish')
 
 function swap(list, index1, index2) {
 	const temp = list[index1]
@@ -17,6 +18,11 @@ function isYou(player) {
 		return true
 	}
 	return false
+}
+
+function isPlayersTurn(gameState, player) {
+	const whoseTurnItIs = gameState.players[gameState.whoseTurn]
+	return whoseTurnItIs === player
 }
 
 // Game play
@@ -119,15 +125,40 @@ function getPlayerCardCountHtml(player) {
 	return ''
 }
 
-function getPlayerHtml(player) {
+//   Show buttons on each player
+//     - if it is "You"r turn
+//     - buttons for each rank in "You"r hand
+//     - for each player who is not You
+function getRankButtonHtml(rank) {
+	return `<button>${rank}</button>`
+}
+function getPlayerRankButtonsHtml(gameState, player, playerYou) {
+	if (!isPlayersTurn(gameState, playerYou)) {
+		return ""
+	}
+	if (isYou(player)) {
+		return ""
+	}
+	const playerYouRanks = getRanks(playerYou.hand);
+	const ranksHtml = playerYouRanks.map(getRankButtonHtml).join('\n')
+	const html = `
+	Ask for rank:
+	${ranksHtml}
+	`
+	return html
+}
+
+function getPlayerHtml(gameState, player) {
 	let name = player.name
 	if (isYou(player)) {
 		name = "You"
 	}
+	const playerYou = gameState.players.find(isYou)
 	const html = `
 		<div id= "${name}" class="player-container">
 			<span class="playerName">${name}</span>
 			${getPlayerCardCountHtml(player)}
+			${getPlayerRankButtonsHtml(gameState, player, playerYou)}
 			${getPlayerHandHtml(player)}
 			${getPlayerBooksHtml(player)}
 		</div>
@@ -158,15 +189,20 @@ function getPlayerHtml(player) {
 
 
 
-function showPlayers(players) {
-	const indexOfYou = players.findIndex(isYou)
-	swap(players, indexOfYou, 0)
-	const html = players.map(getPlayerHtml).join('\n')
+function showPlayers(gameState) {
+	const indexOfYou = gameState.players.findIndex(isYou)
+	swap(gameState.players, indexOfYou, 0)
+
+	function getPlayerHtmlForGameState(player) {
+		return getPlayerHtml(gameState, player)
+	}
+
+	const html = gameState.players.map(getPlayerHtmlForGameState).join('\n')
 	document.body.innerHTML = html
 	// Show the names of all the players
 	// √ names 
 	// √ Hand if player is this user
-	// √ Books 
+	// - Books - use new book images. 
 	// √ Show the number of cards with each player
 	//   Show buttons on each player
 	//     - if it is "You"r turn
@@ -178,21 +214,23 @@ function showPlayers(players) {
 
 // really start doing things here
 window.onload = function () {
-	showPlayers(gameState.players)
-	const socket = io('http://localhost:3000')
+	showPlayers(gameState)
+	// const socket = io('http://localhost:3000')
 	console.log('init')
-	socket.on('connect', onConnect)
-	socket.on('new-player-added', onNewPlayerAdded)
 
-	function onNewPlayerAdded(players) {
-		console.log(`new player`)
-		console.log(`all players`, players)
-	}
 
-	function onConnect() {
-		console.log('connect ' + socket.id);
-		socket.emit('add-new-player', "Rob");
-	}
+	// socket.on('connect', onConnect)
+	// socket.on('new-player-added', onNewPlayerAdded)
+
+	// function onNewPlayerAdded(players) {
+	// 	console.log(`new player`)
+	// 	console.log(`all players`, players)
+	// }
+
+	// function onConnect() {
+	// 	console.log('connect ' + socket.id);
+	// 	socket.emit('add-new-player', "Rob");
+	// }
 
 	// $.toast('Here you can put the text of the toast')
 }
