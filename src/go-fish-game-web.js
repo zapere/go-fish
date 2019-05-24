@@ -2,6 +2,33 @@ const assert = require('assert')
 const io = require('socket.io-client')
 const { getRanks } = require('./go-fish')
 
+const playerName = "elijah"
+
+
+const elijah = {
+	name: 'elijah',
+	hand: ['2♠', '9♠', '2♥'],
+	books: ['4']
+}
+const rob = {
+	name: 'rob',
+	hand: ['3♠', 'K♠', '3♥'],
+	books: ['A', '5']
+}
+
+const carl = {
+	name: 'carl',
+	hand: ['6♠', '7♥'],
+	books: []
+}
+
+
+const gameState = {
+	players: [elijah, carl, rob],
+	ocean: [`K♠`, `7♠`, `8♠`],
+	whoseTurn: 0,
+}
+
 function swap(list, index1, index2) {
 	const temp = list[index1]
 	list[index1] = list[index2]
@@ -22,7 +49,7 @@ function isYou(player) {
 
 function isPlayersTurn(gameState, player) {
 	const whoseTurnItIs = gameState.players[gameState.whoseTurn]
-	return whoseTurnItIs === player
+	return whoseTurnItIs.name === player.name
 }
 
 // Game play
@@ -47,31 +74,6 @@ function isPlayersTurn(gameState, player) {
 // 	- Show the result of the request 
 // - Show the number of cards in the ocean
 
-const elijah = {
-	name: 'elijah',
-	hand: ['2♠', '9♠', '2♥'],
-	books: ['4']
-}
-const rob = {
-	name: 'rob',
-	hand: ['3♠', 'K♠', '3♥'],
-	books: ['A', '5']
-}
-
-const carl = {
-	name: 'carl',
-	hand: ['6♠', '7♥'],
-	books: []
-}
-
-const playerName = "rob"
-
-const gameState = {
-	players: [elijah, carl, rob],
-	ocean: [`K♠`, `7♠`, `8♠`],
-	whoseTurn: 0,
-}
-
 function clearBoard() {
 	document.body.innerHTML = "";
 }
@@ -92,9 +94,8 @@ function getCardImgTag(card) {
 	return `<img src="img/cards/${getCardFileName(card)}" height="180" width="120">`
 }
 
-function getBookCard(book) {
-	const card = `${book}♣`
-	return card
+function getBookImgTag(rank){
+	return `<img src="img/cards/${rank}-book.png" height="180" width="120">`
 }
 
 function getPlayerHandHtml(player) {
@@ -111,7 +112,10 @@ function getPlayerHandHtml(player) {
 }
 
 function getPlayerBooksHtml(player) {
-	const booksHtml = player.books.map(getBookCard).map(getCardImgTag).join('\n')
+	const booksHtml = player.books
+	.map(getBookImgTag)
+	.join('\n')
+
 	const html = `
 		<h4>Books</h4>
 		<div class="playerBookContainer">
@@ -133,9 +137,11 @@ function getRankButtonHtml(rank) {
 	return `<button>${rank}</button>`
 }
 function getPlayerRankButtonsHtml(gameState, player, playerYou) {
+	// if it's not "You"r turn, don't show buttons
 	if (!isPlayersTurn(gameState, playerYou)) {
 		return ""
 	}
+	// don't show buttons next to your own name
 	if (isYou(player)) {
 		return ""
 	}
@@ -190,27 +196,26 @@ function getPlayerHtml(gameState, player) {
 
 
 function showPlayers(gameState) {
-	const indexOfYou = gameState.players.findIndex(isYou)
-	swap(gameState.players, indexOfYou, 0)
+	const players = [...gameState.players]
+	const indexOfYou = players.findIndex(isYou)
+	swap(players, indexOfYou, 0)
 
 	function getPlayerHtmlForGameState(player) {
 		return getPlayerHtml(gameState, player)
 	}
 
-	const html = gameState.players.map(getPlayerHtmlForGameState).join('\n')
+	const html = players.map(getPlayerHtmlForGameState).join('\n')
 	document.body.innerHTML = html
 	// Show the names of all the players
 	// √ names 
 	// √ Hand if player is this user
-	// - Books - use new book images. 
+	// √ Books - use new book images. 
 	// √ Show the number of cards with each player
-	//   Show buttons on each player
-	//     - if it is "You"r turn
-	//     - buttons for each rank in "You"r hand
-	//     - for each player who is not You
+	// √  Show buttons on each player
+	//     √ if it is "You"r turn
+	//     √ buttons for each rank in "You"r hand
+	//     √ for each player who is not You
 }
-
-
 
 // really start doing things here
 window.onload = function () {
