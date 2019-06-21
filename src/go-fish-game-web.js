@@ -26,7 +26,7 @@ const carl = {
 const gameState = {
 	players: [elijah, carl, rob],
 	ocean: [`K♠`, `7♠`, `8♠`],
-	whoseTurn: 0,
+	whoseTurn: 2,
 }
 
 function swap(list, index1, index2) {
@@ -91,11 +91,11 @@ function getCardFileName(card) {
 }
 
 function getCardImgTag(card) {
-	return `<img src="img/cards/${getCardFileName(card)}" height="180" width="120">`
+	return `<img class="playing-card" src="img/cards/${getCardFileName(card)}" height="180" width="120">`
 }
 
 function getBookImgTag(rank) {
-	return `<img src="img/cards/${rank}-book.png" height="180" width="120">`
+	return `<img class="playing-card" src="img/cards/${rank}-book.png" height="180" width="120">`
 }
 
 function getPlayerHandHtml(player) {
@@ -160,6 +160,14 @@ function getPlayerRankButtonsHtml(gameState, player, playerYou) {
 	return html
 }
 
+function getFishIconHtml(gameState, player) {
+	if (isPlayersTurn(gameState, player)) {
+		return `<img class="fish-icon" src="img/fish-icon.svg" height="40px" width="40px">`
+	}
+	return ""
+}
+
+
 function getPlayerHtml(gameState, player) {
 	let name = player.name
 	if (isYou(player)) {
@@ -168,6 +176,7 @@ function getPlayerHtml(gameState, player) {
 	const playerYou = gameState.players.find(isYou)
 	const html = `
 		<div id= "${name}" class="player-container">
+			${getFishIconHtml(gameState, player)}
 			<span class="playerName">${name}</span>
 			${getPlayerCardCountHtml(player)}
 			${getPlayerRankButtonsHtml(gameState, player, playerYou)}
@@ -227,6 +236,7 @@ function showPlayers(gameState) {
 function rankButtonClicked(rank, playerName) {
 	console.log({ playerName: playerName, rank: rank });
 	showToastMessage(`${playerName} have any ${rank}s?`)
+	showToastMessage(`Fish is very good!`)
 }
 window.rankButtonClicked = rankButtonClicked
 
@@ -244,6 +254,9 @@ window.onload = function () {
 	// const socket = io('http://localhost:3000')
 	console.log('init')
 
+	// Ask the player their name. 
+	// text box
+	// button 
 
 	// socket.on('connect', onConnect)
 	// socket.on('new-player-added', onNewPlayerAdded)
