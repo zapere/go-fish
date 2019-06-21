@@ -94,7 +94,7 @@ function getCardImgTag(card) {
 	return `<img src="img/cards/${getCardFileName(card)}" height="180" width="120">`
 }
 
-function getBookImgTag(rank){
+function getBookImgTag(rank) {
 	return `<img src="img/cards/${rank}-book.png" height="180" width="120">`
 }
 
@@ -113,8 +113,8 @@ function getPlayerHandHtml(player) {
 
 function getPlayerBooksHtml(player) {
 	const booksHtml = player.books
-	.map(getBookImgTag)
-	.join('\n')
+		.map(getBookImgTag)
+		.join('\n')
 
 	const html = `
 		<h4>Books</h4>
@@ -133,9 +133,10 @@ function getPlayerCardCountHtml(player) {
 //     - if it is "You"r turn
 //     - buttons for each rank in "You"r hand
 //     - for each player who is not You
-function getRankButtonHtml(rank) {
-	return `<button>${rank}</button>`
+function getRankButtonHtml(player, rank) {
+	return `<button onclick="rankButtonClicked('${rank}', '${player.name}')">${rank}</button>`
 }
+
 function getPlayerRankButtonsHtml(gameState, player, playerYou) {
 	// if it's not "You"r turn, don't show buttons
 	if (!isPlayersTurn(gameState, playerYou)) {
@@ -146,7 +147,12 @@ function getPlayerRankButtonsHtml(gameState, player, playerYou) {
 		return ""
 	}
 	const playerYouRanks = getRanks(playerYou.hand);
-	const ranksHtml = playerYouRanks.map(getRankButtonHtml).join('\n')
+
+	function getRankButtonHtmlForPlayer(rank) {
+		return getRankButtonHtml(player, rank)
+	}
+
+	const ranksHtml = playerYouRanks.map(getRankButtonHtmlForPlayer).join('\n')
 	const html = `
 	Ask for rank:
 	${ranksHtml}
@@ -215,6 +221,21 @@ function showPlayers(gameState) {
 	//     √ if it is "You"r turn
 	//     √ buttons for each rank in "You"r hand
 	//     √ for each player who is not You
+	// Mark whose turn it is. Example: put a fish next to their name
+}
+
+function rankButtonClicked(rank, playerName) {
+	console.log({ playerName: playerName, rank: rank });
+	showToastMessage(`${playerName} have any ${rank}s?`)
+}
+window.rankButtonClicked = rankButtonClicked
+
+function showToastMessage(text) {
+	$.toast({
+		text: text,
+		hideAfter: 5000,
+		showHideTransition: 'plain' // fade, slide or plain
+	})
 }
 
 // really start doing things here
