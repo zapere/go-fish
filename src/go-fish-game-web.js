@@ -230,7 +230,7 @@ function showPlayers(gameState) {
 	//     √ if it is "You"r turn
 	//     √ buttons for each rank in "You"r hand
 	//     √ for each player who is not You
-	// Mark whose turn it is. Example: put a fish next to their name
+	// √ Mark whose turn it is. Example: put a fish next to their name
 }
 
 function rankButtonClicked(rank, playerName) {
@@ -248,10 +248,28 @@ function showToastMessage(text) {
 	})
 }
 
+function showStartScreen() {
+	const startScreenHtml = `
+		<div class="input-group mb-3">
+			<input type="text" class="form-control" placeholder="What's your name?">
+			<div class="input-group-append">
+				<button onclick="joinButtonClicked()" class="btn btn-outline-secondary" type="button" id="button-addon2">Join</button>
+			</div>
+		</div>`
+	document.body.innerHTML = startScreenHtml
+}
+
+function joinButtonClicked(){
+	console.log("clicked")
+	showPlayers(gameState)
+	
+}
+window.joinButtonClicked = joinButtonClicked
+
 // really start doing things here
 window.onload = function () {
-	showPlayers(gameState)
 	// const socket = io('http://localhost:3000')
+	showStartScreen();
 	console.log('init')
 
 	// Ask the player their name. 
