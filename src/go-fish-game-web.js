@@ -1,9 +1,9 @@
 const assert = require('assert')
 const io = require('socket.io-client')
 const { getRanks } = require('./go-fish')
+let socket
 
-const playerName = "elijah"
-
+let playerName = "elijah"
 
 const elijah = {
 	name: 'elijah',
@@ -15,13 +15,11 @@ const rob = {
 	hand: ['3♠', 'K♠', '3♥'],
 	books: ['A', '5']
 }
-
 const carl = {
 	name: 'carl',
 	hand: ['6♠', '7♥'],
 	books: []
 }
-
 
 const gameState = {
 	players: [elijah, carl, rob],
@@ -221,16 +219,6 @@ function showPlayers(gameState) {
 
 	const html = players.map(getPlayerHtmlForGameState).join('\n')
 	document.body.innerHTML = html
-	// Show the names of all the players
-	// √ names 
-	// √ Hand if player is this user
-	// √ Books - use new book images. 
-	// √ Show the number of cards with each player
-	// √  Show buttons on each player
-	//     √ if it is "You"r turn
-	//     √ buttons for each rank in "You"r hand
-	//     √ for each player who is not You
-	// √ Mark whose turn it is. Example: put a fish next to their name
 }
 
 function rankButtonClicked(rank, playerName) {
@@ -251,43 +239,66 @@ function showToastMessage(text) {
 function showStartScreen() {
 	const startScreenHtml = `
 		<div class="input-group mb-3">
-			<input type="text" class="form-control" placeholder="What's your name?">
+			<input id="nameInput" type="text" class="form-control" placeholder="What's your name?">
 			<div class="input-group-append">
-				<button onclick="joinButtonClicked()" class="btn btn-outline-secondary" type="button" id="button-addon2">Join</button>
+				<button onclick="joinGame()" class="btn btn-outline-secondary" type="button" id="button-addon2">Join</button>
 			</div>
 		</div>`
 	document.body.innerHTML = startScreenHtml
 }
 
-function joinButtonClicked(){
-	console.log("clicked")
+function joinGame(){
+	const nameInput = document.getElementById("nameInput");
+	console.log(`nameInput: ${nameInput.value}`);
+	playerName = nameInput.value
+	socket.emit('new-player', playerName)
+	console.log("joining game")
 	showPlayers(gameState)
-	
 }
-window.joinButtonClicked = joinButtonClicked
+window.joinGame = joinGame
 
 // really start doing things here
 window.onload = function () {
-	// const socket = io('http://localhost:3000')
+	socket = io('http://localhost:3000')
 	showStartScreen();
 	console.log('init')
 
-	// Ask the player their name. 
-	// text box
-	// button 
+	// Warm up
+	//√ Switch out the join button for allowing the user to just hit enter. 
+	//√ Save the user's name. Think about where this data should be saved. 
 
-	// socket.on('connect', onConnect)
-	// socket.on('new-player-added', onNewPlayerAdded)
+	function myKeydownHandler(event) {
+		console.log(event);
+		if (event.code === "Enter") {
+			console.log("Enter is hit");
+			joinGame()
+		}
+	}
+	const keyDownEvent = 'keydown';
+	document.addEventListener(keyDownEvent, myKeydownHandler);
 
-	// function onNewPlayerAdded(players) {
-	// 	console.log(`new player`)
-	// 	console.log(`all players`, players)
-	// }
+	// Next steps: 
+	//√ Connect to the server. 
+	// √ Send the name of the user to the server.
+	// Save active players on the server 
+	// Show a start button when 3 players have joined.
+	// Show game after start button is hit
 
-	// function onConnect() {
-	// 	console.log('connect ' + socket.id);
-	// 	socket.emit('add-new-player', "Rob");
-	// }
+
+	// Nice to have / ideas
+	// Show the number of users already connected to the server. 
+	// 
+
+
+	socket.on('connect', onConnect)
+	function onConnect() {
+		console.log('connect ' + socket.id);
+	}
+
+	function onPlayerAdded (activePlayers) {
+		console.log(activePlayers)
+	}
+	socket.on('player-added', onPlayerAdded)
 
 	// $.toast('Here you can put the text of the toast')
 }
