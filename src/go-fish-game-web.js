@@ -50,28 +50,6 @@ function isPlayersTurn(gameState, player) {
 	return whoseTurnItIs.name === player.name
 }
 
-// Game play
-// Ask the player their name. 
-// Start game button. Which anyone can click to start the game. 
-// Display the player looking at the games name on top
-// Click "Ask" next to the player you wish to request a card from. 
-// 	- Click a card in your hand to select the rank of the request.
-// 		- Remove the card from the other player's hand OR 
-// 		- go fish
-
-// printGameState
-// - Show the hand of the user
-// - Show the books of the user
-// - Show the number of cards in the hands of the other players
-// - Show the books of the other players
-// - Show whose turn it is
-// - 
-// - If it is this user's turn:
-//   - offer the option to ask any other player for any rank in this user's hand
-// - Display requests to other players
-// 	- Show the result of the request 
-// - Show the number of cards in the ocean
-
 function clearBoard() {
 	document.body.innerHTML = "";
 }
@@ -247,7 +225,7 @@ function showStartScreen() {
 	document.body.innerHTML = startScreenHtml
 }
 
-function joinGame(){
+function joinGame() {
 	const nameInput = document.getElementById("nameInput");
 	console.log(`nameInput: ${nameInput.value}`);
 	playerName = nameInput.value
@@ -257,15 +235,24 @@ function joinGame(){
 }
 window.joinGame = joinGame
 
-// really start doing things here
+// Game play
+// Ask the player their name. 
+// Start game button. Which anyone can click to start the game. 
+// Display the player looking at the games name on top
+// Click "Ask" next to the player you wish to request a card from. 
+// 	- Click a card in your hand to select the rank of the request.
+// 		- Remove the card from the other player's hand OR 
+// 		- go fish
+
+// - If it is this user's turn:
+//   - offer the option to ask any other player for any rank in this user's hand
+// - Display requests to other players
+// 	- Show the result of the request 
+// - Show the number of cards in the ocean
 window.onload = function () {
 	socket = io('http://localhost:3000')
 	showStartScreen();
 	console.log('init')
-
-	// Warm up
-	//√ Switch out the join button for allowing the user to just hit enter. 
-	//√ Save the user's name. Think about where this data should be saved. 
 
 	function myKeydownHandler(event) {
 		console.log(event);
@@ -283,6 +270,7 @@ window.onload = function () {
 	// Save active players on the server 
 	// Show a start button when 3 players have joined.
 	// Show game after start button is hit
+	// Start game play. 
 
 
 	// Nice to have / ideas
@@ -295,11 +283,15 @@ window.onload = function () {
 		console.log('connect ' + socket.id);
 	}
 
-	function onPlayerAdded (activePlayers) {
+	function onPlayerAdded(activePlayers) {
 		console.log(activePlayers)
 	}
 	socket.on('player-added', onPlayerAdded)
 
+	function onStartNewGame() {
+		showStartScreen()
+	}
+	socket.on('start-new-game', onStartNewGame)
 	// $.toast('Here you can put the text of the toast')
 }
 

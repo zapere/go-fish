@@ -7,7 +7,7 @@ __dirname = path.resolve()
 let activePlayers = []
 
 io.on('connection', function (socket) {
-  console.log('A player connected.')
+  console.log('A player connected.', socket.id)
 
   socket.on('new-player', function (name) {
     console.log(`new-player ${name} - ${socket.id}`);
@@ -16,16 +16,14 @@ io.on('connection', function (socket) {
     io.emit('player-added', activePlayers.map(player => player.name));
   })
 
-  function doesntHaveID(player) {
 
-  }
-
-  socket.on('disconnect', function () {
+  socket.on('disconnect', function (payload) {
     console.log('A player disconnected.', socket.id)
-    // remove the disconnected player
-    activePlayers.filter()
-    // let everyone know 
 
+    // remove all the players
+    activePlayers = []
+    // let everyone know 
+    io.emit('start-new-game')
     // end the game
 
   })
