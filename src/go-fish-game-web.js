@@ -214,7 +214,7 @@ function showToastMessage(text) {
 	})
 }
 
-function showStartScreen() {
+function showNameScreen() {
 	const startScreenHtml = `
 		<div class="input-group mb-3">
 			<input id="nameInput" type="text" class="form-control" placeholder="What's your name?">
@@ -222,16 +222,42 @@ function showStartScreen() {
 				<button onclick="joinGame()" class="btn btn-outline-secondary" type="button" id="button-addon2">Join</button>
 			</div>
 		</div>`
-	document.body.innerHTML = startScreenHtml
+	document.body.innerHTML = startScreenHtml;
+}
+
+function showConnectedPlayersScreen(activePlayers) {
+
+	function getConnectedPlayerHtml(activePlayer) {
+		return `<li class="list-group-item">${activePlayer}</li>`
+	}
+
+	function getButtonHtml() {
+		return `<button type="button" class="btn btn-primary btn-lg btn-block">Start</button>`
+	}
+
+	const connectedPlayersListHtml = activePlayers.map(getConnectedPlayerHtml).join('\n')
+	const connectedPlayersHtml = `
+	<h1>Connected Players</h1>
+	<ul class="list-group list-group-flush">
+		${connectedPlayersListHtml}
+		${getButtonHtml()}
+	`
+	document.body.innerHTML = connectedPlayersHtml;
+}
+
+function onPlayerAdded(activePlayers) {
+	console.log(activePlayers)
+	showConnectedPlayersScreen(activePlayers)
 }
 
 function joinGame() {
 	const nameInput = document.getElementById("nameInput");
 	console.log(`nameInput: ${nameInput.value}`);
-	playerName = nameInput.value
+	playerName = nameInput.value;
+	socket.on('player-added', onPlayerAdded)
 	socket.emit('new-player', playerName)
 	console.log("joining game")
-	showPlayers(gameState)
+	// showPlayers(gameState)
 }
 window.joinGame = joinGame
 
@@ -251,23 +277,22 @@ window.joinGame = joinGame
 // - Show the number of cards in the ocean
 window.onload = function () {
 	socket = io('http://localhost:3000')
-	showStartScreen();
+	showNameScreen();
 	console.log('init')
 
 	function myKeydownHandler(event) {
-		console.log(event);
+		// console.log(event);
 		if (event.code === "Enter") {
 			console.log("Enter is hit");
 			joinGame()
 		}
 	}
-	const keyDownEvent = 'keydown';
-	document.addEventListener(keyDownEvent, myKeydownHandler);
+	document.addEventListener('keydown', myKeydownHandler);
 
 	// Next steps: 
-	//√ Connect to the server. 
+	// √ Connect to the server. 
 	// √ Send the name of the user to the server.
-	// Save active players on the server 
+	// √ Save active players on the server 
 	// Show a start button when 3 players have joined.
 	// Show game after start button is hit
 	// Start game play. 
@@ -283,13 +308,10 @@ window.onload = function () {
 		console.log('connect ' + socket.id);
 	}
 
-	function onPlayerAdded(activePlayers) {
-		console.log(activePlayers)
-	}
-	socket.on('player-added', onPlayerAdded)
+
 
 	function onStartNewGame() {
-		showStartScreen()
+		showNameScreen()
 	}
 	socket.on('start-new-game', onStartNewGame)
 	// $.toast('Here you can put the text of the toast')
