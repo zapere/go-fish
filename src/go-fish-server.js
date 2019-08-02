@@ -16,6 +16,11 @@ io.on('connection', function (socket) {
     io.emit('player-added', activePlayers.map(player => player.name));
   })
 
+  socket.on('game-state', function (gameState) {
+    console.log(`game-state`)
+    io.emit('game-state-changed', gameState);
+  })
+
 
   socket.on('disconnect', function (payload) {
     console.log('A player disconnected.', socket.id)

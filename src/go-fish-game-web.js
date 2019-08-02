@@ -1,6 +1,8 @@
 const assert = require('assert')
 const io = require('socket.io-client')
-const { getRanks } = require('./go-fish')
+const { getRanks, findAndMovePlayerBooks } = require('./go-fish')
+const shuffle = require('./shuffle')
+const {dealFromTop, makeDeck} = require("./deck")
 let socket
 
 let playerName = "elijah"
@@ -21,7 +23,9 @@ const carl = {
 	books: []
 }
 
-const gameState = {
+let playerNames = []
+
+let gameState = {
 	players: [elijah, carl, rob],
 	ocean: [`K♠`, `7♠`, `8♠`],
 	whoseTurn: 2,
@@ -231,8 +235,13 @@ function showConnectedPlayersScreen(activePlayers) {
 		return `<li class="list-group-item">${activePlayer}</li>`
 	}
 
+function onClickStart (){
+	startGame()
+}
+window.onClickStart = onClickStart
+
 	function getButtonHtml() {
-		return `<button type="button" class="btn btn-primary btn-lg btn-block">Start</button>`
+		return `<button onClick="onClickStart()" type="button" class="btn btn-primary btn-lg btn-block">Start</button>`
 	}
 
 	const connectedPlayersListHtml = activePlayers.map(getConnectedPlayerHtml).join('\n')
@@ -247,6 +256,7 @@ function showConnectedPlayersScreen(activePlayers) {
 
 function onPlayerAdded(activePlayers) {
 	console.log(activePlayers)
+	playerNames = activePlayers
 	showConnectedPlayersScreen(activePlayers)
 }
 
@@ -257,9 +267,46 @@ function joinGame() {
 	socket.on('player-added', onPlayerAdded)
 	socket.emit('new-player', playerName)
 	console.log("joining game")
-	// showPlayers(gameState)
 }
 window.joinGame = joinGame
+
+
+// let gameState = {
+// 	players: [elijah, carl, rob],
+// 	ocean: [`K♠`, `7♠`, `8♠`],
+// 	whoseTurn: 2,
+// }
+
+function startGame() {
+	console.log(playerNames)
+	const ocean = shuffle(makeDeck())
+
+	function createPlayer(name){
+		const hand = dealFromTop(ocean, 7)
+		const books = []
+		const player = {
+			name,
+			hand,
+			books
+		}
+		findAndMovePlayerBooks(player)
+		return player
+	}
+
+	const players = playerNames.map(createPlayer)
+	const whoseTurn = 0
+
+	gameState = {
+		players,
+		ocean,
+		whoseTurn
+	}
+	socket.emit('game-state', gameState)
+
+	// showPlayers(gameState)
+}
+
+window.startGame = startGame
 
 // Game play
 // Ask the player their name. 
@@ -308,7 +355,10 @@ window.onload = function () {
 		console.log('connect ' + socket.id);
 	}
 
-
+	socket.on("game-state-changed", onGameStateChanged)
+	function onGameStateChanged(gameState) {
+		showPlayers(gameState)
+	}
 
 	function onStartNewGame() {
 		showNameScreen()
