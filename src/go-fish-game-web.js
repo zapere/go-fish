@@ -5,7 +5,7 @@ const shuffle = require('./shuffle')
 const {dealFromTop, makeDeck} = require("./deck")
 let socket
 
-let playerName = "elijah"
+let playerName = ""
 
 const elijah = {
 	name: 'elijah',
@@ -190,7 +190,7 @@ function getPlayerHtml(gameState, player) {
 
 
 
-function showPlayers(gameState) {
+function showGameScreen(gameState) {
 	const players = [...gameState.players]
 	const indexOfYou = players.findIndex(isYou)
 	swap(players, indexOfYou, 0)
@@ -218,7 +218,8 @@ function showToastMessage(text) {
 	})
 }
 
-function showNameScreen() {
+function showNameInputScreen() {
+	playerName = ""
 	const startScreenHtml = `
 		<div class="input-group mb-3">
 			<input id="nameInput" type="text" class="form-control" placeholder="What's your name?">
@@ -255,6 +256,9 @@ window.onClickStart = onClickStart
 }
 
 function onPlayerAdded(activePlayers) {
+	if (playerName === "") {
+		return
+	}
 	console.log(activePlayers)
 	playerNames = activePlayers
 	showConnectedPlayersScreen(activePlayers)
@@ -302,8 +306,6 @@ function startGame() {
 		whoseTurn
 	}
 	socket.emit('game-state', gameState)
-
-	// showPlayers(gameState)
 }
 
 window.startGame = startGame
@@ -324,7 +326,7 @@ window.startGame = startGame
 // - Show the number of cards in the ocean
 window.onload = function () {
 	socket = io('http://localhost:3000')
-	showNameScreen();
+	showNameInputScreen();
 	console.log('init')
 
 	function myKeydownHandler(event) {
@@ -357,11 +359,11 @@ window.onload = function () {
 
 	socket.on("game-state-changed", onGameStateChanged)
 	function onGameStateChanged(gameState) {
-		showPlayers(gameState)
+		showGameScreen(gameState)
 	}
 
 	function onStartNewGame() {
-		showNameScreen()
+		showNameInputScreen()
 	}
 	socket.on('start-new-game', onStartNewGame)
 	// $.toast('Here you can put the text of the toast')
