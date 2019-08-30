@@ -2,7 +2,7 @@ const assert = require('assert')
 const io = require('socket.io-client')
 const { getRanks, findAndMovePlayerBooks } = require('./go-fish')
 const shuffle = require('./shuffle')
-const {dealFromTop, makeDeck} = require("./deck")
+const { dealFromTop, makeDeck } = require("./deck")
 let socket
 
 let playerName = ""
@@ -79,29 +79,32 @@ function getBookImgTag(rank) {
 }
 
 function getPlayerHandHtml(player) {
-	let html = ''
-	if (isYou(player)) {
-		const cardsHtml = player.hand.map(getCardImgTag).join('\n')
-		html = `
+	if (!isYou(player)) {
+		return ""
+	}
+	const cardsHtml = player.hand.map(getCardImgTag).join('\n')
+	return `
 		<h4>Hand</h4>
 		<div class="playerHandContainer">
 			${cardsHtml}
 		</div>`
-	}
-	return html
+}
+
+function getBooksHtml(books) {
+	return books
+		.map(getBookImgTag)
+		.join('\n')
 }
 
 function getPlayerBooksHtml(player) {
-	const booksHtml = player.books
-		.map(getBookImgTag)
-		.join('\n')
+	const booksHtml = getBooksHtml(player.books);
 
-	const html = `
+	return `
 		<h4>Books</h4>
 		<div class="playerBookContainer">
 			${booksHtml}
 		</div>`
-	return html
+
 }
 
 function getPlayerCardCountHtml(player) {
@@ -236,10 +239,10 @@ function showConnectedPlayersScreen(activePlayers) {
 		return `<li class="list-group-item">${activePlayer}</li>`
 	}
 
-function onClickStart (){
-	startGame()
-}
-window.onClickStart = onClickStart
+	function onClickStart() {
+		startGame()
+	}
+	window.onClickStart = onClickStart
 
 	function getButtonHtml() {
 		return `<button onClick="onClickStart()" type="button" class="btn btn-primary btn-lg btn-block">Start</button>`
@@ -285,7 +288,7 @@ function startGame() {
 	console.log(playerNames)
 	const ocean = shuffle(makeDeck())
 
-	function createPlayer(name){
+	function createPlayer(name) {
 		const hand = dealFromTop(ocean, 7)
 		const books = []
 		const player = {
