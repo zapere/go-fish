@@ -7,30 +7,6 @@ let socket
 
 let playerName = ""
 
-const elijah = {
-	name: 'elijah',
-	hand: ['2♠', '9♠', '2♥'],
-	books: ['4']
-}
-const rob = {
-	name: 'rob',
-	hand: ['3♠', 'K♠', '3♥'],
-	books: ['A', '5']
-}
-const carl = {
-	name: 'carl',
-	hand: ['6♠', '7♥'],
-	books: []
-}
-
-let playerNames = []
-
-let gameState = {
-	players: [elijah, carl, rob],
-	ocean: [`K♠`, `7♠`, `8♠`],
-	whoseTurn: 2,
-}
-
 function swap(list, index1, index2) {
 	const temp = list[index1]
 	list[index1] = list[index2]
@@ -208,6 +184,9 @@ function showGameScreen(gameState) {
 
 function rankButtonClicked(rank, playerName) {
 	console.log({ playerName: playerName, rank: rank });
+	socket.emit('rank-requested', { 
+		requestee: playerName, 
+		rank: rank })
 	showToastMessage(`${playerName} have any ${rank}s?`)
 	showToastMessage(`Fish is very good!`)
 }
@@ -303,12 +282,12 @@ function startGame() {
 	const players = playerNames.map(createPlayer)
 	const whoseTurn = 0
 
-	gameState = {
+	const gameState = {
 		players,
 		ocean,
 		whoseTurn
 	}
-	socket.emit('game-state', gameState)
+	socket.emit('start-game', gameState)
 }
 
 window.startGame = startGame
