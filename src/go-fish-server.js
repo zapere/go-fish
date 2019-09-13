@@ -2,6 +2,9 @@ const path = require('path')
 const app = require('express')()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
+const {relinquishCardsOfRank, getRank, findAndMovePlayerBooks} = require('./go-fish')
+const {dealFromTop} = require('./deck')
+
 __dirname = path.resolve()
 
 let activePlayers = []
@@ -26,15 +29,10 @@ io.on('connection', function (socket) {
   socket.on('rank-requested', function (rankRequest) {
     const requesteeName = rankRequest.requestee
     const rank = rankRequest.rank
-    const requestor = currentGameState.players[currentGameState.whoseTurn].name
-    console.log(`rank-requested ${requestor} ${requesteeName} ${rank}`)
+    const requestor = currentGameState.players[currentGameState.whoseTurn]
+    console.log(`rank-requested ${requestor.name} ${requesteeName} ${rank}`)
     // TODO do ask rank logic. 
-    // ******
-    // ******
-    // FIXME: gameState below should be currentGameState
-    // ******
-    // ******
-    const requestee = gameState.players
+    const requestee = currentGameState.players
       .find(function (player) {
         return player.name === requesteeName
       })
@@ -52,7 +50,7 @@ io.on('connection', function (socket) {
     const relinquishedCards = relinquishCardsOfRank(requestee, rank)
     if (relinquishedCards.length > 0) {
       console.log("relinquishedCards", relinquishedCards)
-      currentPlayer.hand = currentPlayer.hand.concat(relinquishedCards)
+      requestor.hand = requestor.hand.concat(relinquishedCards)
       gotTheRequestedRank = true
     }
     else {
@@ -63,20 +61,20 @@ io.on('connection', function (socket) {
       // c=>< c=>< c=>< c=><  c=>< 
       //     c=>< c=>< c=>< c=>< 
       //         c=>< c=>< c=>< c=>< 
-      const fishedCard = dealFromTop(ocean, 1)[0]
-      currentPlayer.hand.push(fishedCard)
+      const fishedCard = dealFromTop(currentGameState.ocean, 1)[0]
+      requestor.hand.push(fishedCard)
       console.log(`You got a ${fishedCard}`)
 
       if (getRank(fishedCard) === rank) {
         gotTheRequestedRank = true
       }
     }
-    findAndMovePlayerBooks(currentPlayer)
+    findAndMovePlayerBooks(requestor)
     // let currentPlayer = gameState.players[gameState.whoseTurn]
     // if the player got the rank, then don't change whose turn.
     // but if the player didn't, then advance to the next player
     if (gotTheRequestedRank === false) {
-      gameState.whoseTurn = (gameState.whoseTurn + 1) % gameState.players.length
+      currentGameState.whoseTurn = (currentGameState.whoseTurn + 1) % currentGameState.players.length
     }
   })
 
