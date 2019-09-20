@@ -2,8 +2,8 @@ const path = require('path')
 const app = require('express')()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
-const {relinquishCardsOfRank, getRank, findAndMovePlayerBooks} = require('./go-fish')
-const {dealFromTop} = require('./deck')
+const { relinquishCardsOfRank, getRank, findAndMovePlayerBooks } = require('./go-fish')
+const { dealFromTop } = require('./deck')
 
 __dirname = path.resolve()
 
@@ -76,6 +76,35 @@ io.on('connection', function (socket) {
     if (gotTheRequestedRank === false) {
       currentGameState.whoseTurn = (currentGameState.whoseTurn + 1) % currentGameState.players.length
     }
+
+    // detect whether the game is over:
+    // are there any players who still have cards?
+
+    function playerHasCards(player) {
+      return player.hand.length !== 0
+    }
+
+    const playersWithCards = currentGameState.players.filter(playerHasCards)
+
+    if (playersWithCards.length === 0) {
+      console.log("Game is over!!!")
+      io.emit('game-state-changed', currentGameState);
+      return;
+    }
+    // give the player whose turn it is a card if they run out
+    // but if there are no cards in the ocean, just go to the next player
+
+    const currentPlayer = currentGameState.players[currentGameState.whoseTurn]
+    if (currentPlayer.hand.length === 0) {
+      const fishedCard = dealFromTop(currentGameState.ocean, 1)[0]
+      if (fishedCard !== undefined) {
+        currentPlayer.hand.push(fishedCard)
+      } else {
+        currentGameState.whoseTurn = (currentGameState.whoseTurn + 1) % currentGameState.players.length
+      }
+    }
+
+    io.emit('game-state-changed', currentGameState);
   })
 
 
