@@ -18,6 +18,8 @@ swap(list, 0, 3)
 const swapped = list
 assert.deepEqual(["bird", "cat", "rhinoceros", "dog"], swapped)
 
+const gameBoard = document.getElementById("game-board"); 
+
 function isYou(player) {
 	if (player.name === playerName) {
 		return true
@@ -31,7 +33,7 @@ function isPlayersTurn(gameState, player) {
 }
 
 function clearBoard() {
-	document.body.innerHTML = "";
+	gameBoard.innerHTML = "";
 }
 
 function getCardFileName(card) {
@@ -179,16 +181,19 @@ function showGameScreen(gameState) {
 	}
 
 	const html = players.map(getPlayerHtmlForGameState).join('\n')
-	document.body.innerHTML = html
+
+	const gameboard = document.getElementById("game-board");
+	gameboard.innerHTML = html; 
+
+	gameBoard.innerHTML = html
 }
 
 function rankButtonClicked(rank, playerName) {
 	console.log({ playerName: playerName, rank: rank });
-	socket.emit('rank-requested', { 
-		requestee: playerName, 
-		rank: rank })
-	showToastMessage(`${playerName} have any ${rank}s?`)
-	showToastMessage(`Fish is very good!`)
+	socket.emit('rank-requested', {
+		requestee: playerName,
+		rank: rank
+	})
 }
 window.rankButtonClicked = rankButtonClicked
 
@@ -209,7 +214,7 @@ function showNameInputScreen() {
 				<button onclick="joinGame()" class="btn btn-outline-secondary" type="button" id="button-addon2">Join</button>
 			</div>
 		</div>`
-	document.body.innerHTML = startScreenHtml;
+	gameBoard.innerHTML = startScreenHtml;
 }
 
 function showConnectedPlayersScreen(activePlayers) {
@@ -234,7 +239,7 @@ function showConnectedPlayersScreen(activePlayers) {
 		${connectedPlayersListHtml}
 		${getButtonHtml()}
 	`
-	document.body.innerHTML = connectedPlayersHtml;
+	gameBoard.innerHTML = connectedPlayersHtml;
 }
 
 function onPlayerAdded(activePlayers) {
@@ -324,9 +329,9 @@ window.onload = function () {
 	// √ Connect to the server. 
 	// √ Send the name of the user to the server.
 	// √ Save active players on the server 
-	// Show a start button when 3 players have joined.
-	// Show game after start button is hit
-	// Start game play. 
+	// √ Show a start button when 3 players have joined.
+	// √ Show game after start button is hit
+	// √ Start game play. 
 
 
 	// Nice to have / ideas
@@ -343,6 +348,13 @@ window.onload = function () {
 	function onGameStateChanged(gameState) {
 		showGameScreen(gameState)
 	}
+	// rank-requested
+	socket.on("rank-requested-broadcast", onRankRequested)
+	function onRankRequested(rankRequested) {
+		console.log("Rank Requested", rankRequested)
+		showToastMessage(`${rankRequested.requestor} asked ${rankRequested.requestee} got any ${rankRequested.rank}s?`)
+	}
+
 
 	function onStartNewGame() {
 		showNameInputScreen()

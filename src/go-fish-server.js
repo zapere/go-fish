@@ -30,6 +30,7 @@ io.on('connection', function (socket) {
     const requesteeName = rankRequest.requestee
     const rank = rankRequest.rank
     const requestor = currentGameState.players[currentGameState.whoseTurn]
+    rankRequest.requestor = requestor.name
     console.log(`rank-requested ${requestor.name} ${requesteeName} ${rank}`)
     // TODO do ask rank logic. 
     const requestee = currentGameState.players
@@ -88,6 +89,7 @@ io.on('connection', function (socket) {
 
     if (playersWithCards.length === 0) {
       console.log("Game is over!!!")
+      // TODO: Do we want to send a game-over event? 
       io.emit('game-state-changed', currentGameState);
       return;
     }
@@ -104,6 +106,8 @@ io.on('connection', function (socket) {
       }
     }
 
+
+    io.emit('rank-requested-broadcast', rankRequest)
     io.emit('game-state-changed', currentGameState);
   })
 
