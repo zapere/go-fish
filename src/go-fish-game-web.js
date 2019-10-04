@@ -18,7 +18,7 @@ swap(list, 0, 3)
 const swapped = list
 assert.deepEqual(["bird", "cat", "rhinoceros", "dog"], swapped)
 
-const gameBoard = document.getElementById("game-board"); 
+const gameBoard = document.getElementById("game-board");
 
 function isYou(player) {
 	if (player.name === playerName) {
@@ -183,7 +183,7 @@ function showGameScreen(gameState) {
 	const html = players.map(getPlayerHtmlForGameState).join('\n')
 
 	const gameboard = document.getElementById("game-board");
-	gameboard.innerHTML = html; 
+	gameboard.innerHTML = html;
 
 	gameBoard.innerHTML = html
 }
@@ -353,6 +353,8 @@ window.onload = function () {
 	function onRankRequested(rankRequested) {
 		console.log("Rank Requested", rankRequested)
 		showToastMessage(`${rankRequested.requestor} asked ${rankRequested.requestee} got any ${rankRequested.rank}s?`)
+		var msg = new SpeechSynthesisUtterance(`${rankRequested.requestor} asked ${rankRequested.requestee} got any ${rankRequested.rank}s?`);
+		window["speechSynthesis"].speak(msg);
 	}
 
 
