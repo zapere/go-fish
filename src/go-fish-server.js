@@ -97,6 +97,7 @@ io.on('connection', function (socket) {
     // but if there are no cards in the ocean, just go to the next player
 
     const currentPlayer = currentGameState.players[currentGameState.whoseTurn]
+    const { whoseTurn } = currentGameState
     if (currentPlayer.hand.length === 0) {
       const fishedCard = dealFromTop(currentGameState.ocean, 1)[0]
       if (fishedCard !== undefined) {
@@ -106,8 +107,7 @@ io.on('connection', function (socket) {
       }
     }
 
-
-    io.emit('rank-requested-broadcast', rankRequest)
+    io.emit('rank-requested-broadcast', { rankRequest, whoseTurn })
     io.emit('game-state-changed', currentGameState);
   })
 

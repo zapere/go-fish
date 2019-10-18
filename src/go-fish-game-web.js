@@ -197,7 +197,16 @@ function rankButtonClicked(rank, playerName) {
 }
 window.rankButtonClicked = rankButtonClicked
 
-function showToastMessage(text) {
+// https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance
+
+function showToastMessage(text, whoseTurn) {
+	var msg = new SpeechSynthesisUtterance(text);
+	const voices = window["speechSynthesis"].getVoices();
+	const myVoices = [0, 7, 11]
+	const voiceIndex = myVoices[whoseTurn]            //  0 or 7 or 11, depending on whoseTurn
+	// FIXME: Sometimes the voice advances before it should. 
+	msg.voice = voices[voiceIndex];
+	window["speechSynthesis"].speak(msg);
 	$.toast({
 		text: text,
 		hideAfter: 5000,
@@ -350,11 +359,13 @@ window.onload = function () {
 	}
 	// rank-requested
 	socket.on("rank-requested-broadcast", onRankRequested)
-	function onRankRequested(rankRequested) {
+	function onRankRequested(request) {
+		console.log("request", request)
+		const { whoseTurn, rankRequest: rankRequested } = request
 		console.log("Rank Requested", rankRequested)
-		showToastMessage(`${rankRequested.requestor} asked ${rankRequested.requestee} got any ${rankRequested.rank}s?`)
-		var msg = new SpeechSynthesisUtterance(`${rankRequested.requestor} asked ${rankRequested.requestee} got any ${rankRequested.rank}s?`);
-		window["speechSynthesis"].speak(msg);
+		const message = `${rankRequested.requestor} asked ${rankRequested.requestee} got any ${rankRequested.rank}s?`
+		console.log(message);
+		showToastMessage(message, whoseTurn)
 	}
 
 
