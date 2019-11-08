@@ -1,6 +1,6 @@
 const assert = require('assert')
 const io = require('socket.io-client')
-const { getRanks, findAndMovePlayerBooks } = require('./go-fish')
+const { getRank, getRanks, findAndMovePlayerBooks } = require('./go-fish')
 const shuffle = require('./shuffle')
 const { dealFromTop, makeDeck } = require("./deck")
 let socket
@@ -60,7 +60,18 @@ function getPlayerHandHtml(player) {
 	if (!isYou(player)) {
 		return ""
 	}
-	const cardsHtml = player.hand.map(getCardImgTag).join('\n')
+	console.log(`Hand: ${player.hand}`);
+	const cardsHtml = player.hand
+		.sort((card1, card2) => {
+			if (getRank(card1) === getRank(card2)) return 0
+			return getRank(card1) > getRank(card2) ? 1 : -1;
+		})
+		.map((card) => {
+			console.log(card)
+			return card
+		})
+		.map(getCardImgTag)
+		.join('\n')
 	return `
 		<h4>Hand</h4>
 		<div class="playerHandContainer">
