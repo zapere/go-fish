@@ -1,6 +1,7 @@
 const assert = require('assert')
 const {
 	group,
+	sortHand, getRankValue,
 	printPlayerHand,
 	printPlayerName,
 	printPlayerBooks,
@@ -72,6 +73,7 @@ assert.deepEqual(false, hasFourCards(`aaa`))
 assert.deepEqual(true, hasFourCards(`aaaa`))
 assert.deepEqual(true, hasFourCards(`10101010`))
 assert.deepEqual(false, hasFourCards(`1010`))
+
 
 
 assert.deepEqual('a', getRankFromGroup(`aaa`))
@@ -151,6 +153,19 @@ assert.deepEqual(fred.hand, ['3♠', '5♠', '5♦', '5♥', 'K♠', '3♥'])
 const threes = relinquishCardsOfRank(fred, '3')
 assert.deepEqual(threes, ['3♠', '3♥'])
 assert.deepEqual(fred.hand, ['5♠', '5♦', '5♥', 'K♠'])
+
+
+assert.deepEqual(sortHand([]), [])
+assert.deepEqual(sortHand(['5♠']), ['5♠'])
+assert.deepEqual(sortHand(['5♠', '3♠',])['3♠', '5♠'])
+assert.deepEqual(sortHand(['10♠', '9♠',]), ['9♠', '10♠'])
+assert.deepEqual(sortHand(['10♠', '9♠', 'K♠', 'Q♠']), ['9♠', '10♠', 'Q♠', 'K♠'])
+
+assert.strictEqual(getRankValue('10♠'), 10)
+assert.strictEqual(getRankValue('K♠'), 13)
+assert.strictEqual(getRankValue('J♠'), 11)
+assert.strictEqual(getRankValue('Q♠'), 12)
+assert.strictEqual(getRankValue('A♠'), 14)
 
 // console.log(printGameState(gameState, carl))
 

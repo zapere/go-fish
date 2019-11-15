@@ -11,6 +11,21 @@ const printPlayerHand = function (playerToDisplay, forPlayer) {
 	return '[.....]'
 }
 
+const getRankValue = card => {
+	const ranks = ['', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+	const rank = getRank(card)
+	return ranks.indexOf(rank)
+}
+
+const compareCards = (card1, card2) => {
+	const card1RankValue = getRankValue(card1)
+	const card2RankValue = getRankValue(card2)
+	if (card1RankValue === card2RankValue) return 0
+	return card1RankValue > card2RankValue ? 1 : -1;
+}
+
+const sortHand = hand => hand.sort(compareCards)
+
 const group = function (list) {
 	list.sort()
 	list.push('Sentinel')
@@ -182,6 +197,7 @@ const relinquishCardsOfRank = function (player, requestedRank) {
 
 module.exports = {
 	group,
+	sortHand,
 	getRank,
 	printPlayerHand,
 	printPlayerName,
@@ -195,6 +211,8 @@ module.exports = {
 	findAndMovePlayerBooks,
 	getRanks,
 	matchesRank,
-	relinquishCardsOfRank
+	relinquishCardsOfRank,
+	getRankValue,
+	compareCards
 }
 
