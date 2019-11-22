@@ -371,8 +371,35 @@ window.onload = function () {
 		console.log("request", request)
 		const { whoseTurn, rankRequest: rankRequested } = request
 		console.log("Rank Requested", rankRequested)
-		const message = `${rankRequested.requestor} asked ${rankRequested.requestee} got any ${rankRequested.rank}s?`
+		const { requestor, requestee, rank } = rankRequested
+		// "A" => "aces"
+		// "7" => "sevens"
+		const pronunciationMap = {
+			1: "ones",
+			2: "twos",
+			3: "threes",
+			4: "fours",
+			5: "fives",
+			6: "sixes",
+			7: "sevens",
+			8: "eights",
+			9: "nines",
+			10: "tens",
+			J: "jacks",
+			Q: "queens",
+			K: "kings",
+			A: "aces",
+		}
+		// const sevens = pronunciationMap[7]
+		// const aces = pronunciationMap[A]
+		// text -> "rob asked elijah got any As?"
+		// text -> "rob asked elijah got any 7s?"
+		// want -> "rob asked elijah got any aces?"
+		// want -> "rob asked elijah got any sevens?"
+		const spokenRank = pronunciationMap[rank]
+		const message = `${requestor} asked ${requestee} got any ${spokenRank}?`
 		console.log(message);
+
 		showToastMessage(message, whoseTurn)
 	}
 
