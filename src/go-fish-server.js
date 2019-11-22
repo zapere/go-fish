@@ -30,7 +30,7 @@ io.on('connection', function (socket) {
     const requesteeName = rankRequest.requestee
     const rank = rankRequest.rank
     const requestor = currentGameState.players[currentGameState.whoseTurn]
-    rankRequest.requestor = requestor.name
+    rankRequest.requestor = requestor
     console.log(`rank-requested ${requestor.name} ${requesteeName} ${rank}`)
     // TODO do ask rank logic. 
     const requestee = currentGameState.players

@@ -136,7 +136,6 @@ function getFishIconHtml(gameState, player) {
 	return ""
 }
 
-
 function getPlayerHtml(gameState, player) {
 	let name = player.name
 	if (isYou(player)) {
@@ -177,8 +176,6 @@ function getPlayerHtml(gameState, player) {
 	return html
 }
 
-
-
 function showGameScreen(gameState) {
 	const players = [...gameState.players]
 	const indexOfYou = players.findIndex(isYou)
@@ -207,13 +204,9 @@ window.rankButtonClicked = rankButtonClicked
 
 // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance
 
-function showToastMessage(text, whoseTurn) {
+function showToastMessage(text, voice) {
 	var msg = new SpeechSynthesisUtterance(text);
-	const voices = window["speechSynthesis"].getVoices();
-	const myVoices = [0, 7, 11]
-	const voiceIndex = myVoices[whoseTurn]            //  0 or 7 or 11, depending on whoseTurn
-	// FIXME: Sometimes the voice advances before it should. 
-	msg.voice = voices[voiceIndex];
+	msg.voice = voice;
 	window["speechSynthesis"].speak(msg);
 	$.toast({
 		text: text,
@@ -289,13 +282,23 @@ function startGame() {
 	console.log(playerNames)
 	const ocean = shuffle(makeDeck())
 
-	function createPlayer(name) {
+
+
+
+	function createPlayer(name, index) {
 		const hand = dealFromTop(ocean, 7)
 		const books = []
+
+		const voices = window["speechSynthesis"].getVoices();
+		const myVoices = [0, 7, 11]
+		const voiceIndex = myVoices[index]
+		const voice = voices[voiceIndex];
+
 		const player = {
 			name,
 			hand,
-			books
+			books,
+			voice
 		}
 		findAndMovePlayerBooks(player)
 		return player
@@ -372,8 +375,6 @@ window.onload = function () {
 		const { whoseTurn, rankRequest: rankRequested } = request
 		console.log("Rank Requested", rankRequested)
 		const { requestor, requestee, rank } = rankRequested
-		// "A" => "aces"
-		// "7" => "sevens"
 		const pronunciationMap = {
 			1: "ones",
 			2: "twos",
@@ -390,17 +391,12 @@ window.onload = function () {
 			K: "kings",
 			A: "aces",
 		}
-		// const sevens = pronunciationMap[7]
-		// const aces = pronunciationMap[A]
-		// text -> "rob asked elijah got any As?"
-		// text -> "rob asked elijah got any 7s?"
-		// want -> "rob asked elijah got any aces?"
-		// want -> "rob asked elijah got any sevens?"
 		const spokenRank = pronunciationMap[rank]
-		const message = `${requestor} asked ${requestee} got any ${spokenRank}?`
+		const message = `${requestor.name} asked ${requestee} got any ${spokenRank}?`
 		console.log(message);
-
-		showToastMessage(message, whoseTurn)
+		// requestor -> just name
+		const voice = requestor.voice
+		showToastMessage(message, voice)
 	}
 
 
