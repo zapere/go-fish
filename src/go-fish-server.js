@@ -23,6 +23,7 @@ io.on('connection', function (socket) {
   socket.on('start-game', function (gameState) {
     console.log(`start-game`)
     currentGameState = gameState
+    console.log(gameState)
     io.emit('game-state-changed', currentGameState);
   })
 
@@ -110,7 +111,6 @@ io.on('connection', function (socket) {
     io.emit('rank-requested-broadcast', { rankRequest, whoseTurn })
     io.emit('game-state-changed', currentGameState);
   })
-
 
   socket.on('disconnect', function (payload) {
     console.log('A player disconnected.', socket.id)

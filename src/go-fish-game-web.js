@@ -204,8 +204,12 @@ window.rankButtonClicked = rankButtonClicked
 
 // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance
 
-function showToastMessage(text, voice) {
+function showToastMessage(text, voiceIndex) {
 	var msg = new SpeechSynthesisUtterance(text);
+	const voices = window["speechSynthesis"].getVoices();
+	console.log(`typeof: ${typeof window["speechSynthesis"].getVoices}`);
+	const voice = voices[voiceIndex]
+	console.log({ voice: voice, voices })
 	msg.voice = voice;
 	window["speechSynthesis"].speak(msg);
 	$.toast({
@@ -262,6 +266,7 @@ function onPlayerAdded(activePlayers) {
 }
 
 function joinGame() {
+	showToastMessage("Welcome to the best game ever!", 3); 
 	const nameInput = document.getElementById("nameInput");
 	console.log(`nameInput: ${nameInput.value}`);
 	playerName = nameInput.value;
@@ -289,16 +294,21 @@ function startGame() {
 		const hand = dealFromTop(ocean, 7)
 		const books = []
 
-		const voices = window["speechSynthesis"].getVoices();
+		// var ignored = new SpeechSynthesisUtterance("text");
+		// const voices = window["speechSynthesis"].getVoices();
+		// console.log(window["speechSynthesis"]);
+
 		const myVoices = [0, 7, 11]
 		const voiceIndex = myVoices[index]
-		const voice = voices[voiceIndex];
-
+		// const voice = voices[voiceIndex];
+		//console.log(`${name} voice: ${voice}`);
+		// console.log("index", index)
+		// console.log("voices", voices)
 		const player = {
 			name,
 			hand,
 			books,
-			voice
+			voiceIndex
 		}
 		findAndMovePlayerBooks(player)
 		return player
@@ -312,6 +322,7 @@ function startGame() {
 		ocean,
 		whoseTurn
 	}
+	console.log("player voice indexes", gameState.players.map(player => player.voiceIndex))
 	socket.emit('start-game', gameState)
 }
 
@@ -395,8 +406,8 @@ window.onload = function () {
 		const message = `${requestor.name} asked ${requestee} got any ${spokenRank}?`
 		console.log(message);
 		// requestor -> just name
-		const voice = requestor.voice
-		showToastMessage(message, voice)
+		const voiceIndex = requestor.voiceIndex
+		showToastMessage(message, voiceIndex)
 	}
 
 
